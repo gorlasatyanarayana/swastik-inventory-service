@@ -34,7 +34,7 @@ public class InventoryMastEntity  implements Serializable{
 	private UUID id;
 	
 	@Column(name = "product_id")
-	private UUID product_id;
+	private UUID productId;
 		
 	@Column(name = "quantity")
 	private int quantity;

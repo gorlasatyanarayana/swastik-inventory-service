@@ -12,6 +12,7 @@ import com.swastik.service.inventory.dto.InventoryCreateRequestDto;
 import com.swastik.service.inventory.dto.InventoryCreateResponse;
 import com.swastik.service.inventory.dto.InventoryInquiryRequestDto;
 import com.swastik.service.inventory.dto.InventoryInquiryResponse;
+import com.swastik.service.inventory.entity.InventoryHistEntity;
 import com.swastik.service.inventory.entity.InventoryMastEntity;
 import com.swastik.service.inventory.repository.InventoryHistRepository;
 import com.swastik.service.inventory.repository.InventoryMastRepository;
@@ -38,7 +39,7 @@ public class InventoryServiceImpl implements InventoryService{
 		
 	
 		InventoryMastEntity inventoryMastEntity  = new InventoryMastEntity();
-		inventoryMastEntity.setProduct_id(UUID.fromString(request.getProductId()));
+		inventoryMastEntity.setProductId(UUID.fromString(request.getProductId()));
 		inventoryMastEntity.setQuantity(request.getQuantity());
 		inventoryMastEntity.setCreatedBy("Inventory Service");
 		inventoryMastEntity.setCreatedAt(LocalDateTime.now());
@@ -48,6 +49,22 @@ public class InventoryServiceImpl implements InventoryService{
 		
 		if(inventoryMastEntity !=null && inventoryMastEntity.getId() != null) {
 			log.info("[Add-New-Inventory] inventory added successfully with inventory id : {} ",inventoryMastEntity.getId());
+			
+			log.info("[Add-New-Inventory] add new inventory history item");
+			
+			InventoryHistEntity inventoryHistEntity  = new InventoryHistEntity();
+			inventoryHistEntity.setProductId(UUID.fromString(request.getProductId()));
+			inventoryHistEntity.setChangeType(request.getChangeType());
+			inventoryHistEntity.setQuantity(request.getQuantity());
+			inventoryHistEntity.setCreatedBy("Inventory Service");
+			inventoryHistEntity.setCreatedAt(LocalDateTime.now());
+			
+			inventoryHistEntity = inventoryHistRepository.save(inventoryHistEntity);
+			
+			if(inventoryHistEntity !=null && inventoryHistEntity.getId() != null) {
+				log.info("[Add-New-Inventory] inventory history  added successfully with inventory id : {} ",inventoryHistEntity.getId());
+			}			
+			
 			response = InventoryCreateResponse.builder().success(true).inventoryId(inventoryMastEntity.getId().toString()).build();
 		} else {	
 			log.info("[Add-New-Inventory] failed to create product");

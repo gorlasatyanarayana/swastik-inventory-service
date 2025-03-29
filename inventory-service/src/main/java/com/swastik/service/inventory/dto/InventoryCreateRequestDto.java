@@ -14,6 +14,7 @@ public class InventoryCreateRequestDto {
 	
 	private String productId;	
 	private int quantity;
+	private String changeType;
 	
 
 }
